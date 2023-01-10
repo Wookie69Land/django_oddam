@@ -4,10 +4,20 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.core.paginator import Paginator
 
+from oddam_app.models import Donation
 
 class LandingPageView(View):
     def get(self, request):
-        return render(request, "index.html")
+        donations = Donation.objects.all()
+        bags = 0
+        institutions = []
+        for donation in donations:
+            bags += donation.quantity
+            if donation.institution not in institutions:
+                institutions.append(donation.institution)
+        institutions_count = len(institutions)
+        return render(request, "index.html", {'bags': bags,
+                                              'institutions': institutions_count})
 
 
 class AddDonationView(View):
