@@ -6,6 +6,9 @@ from django.db.models import Q
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 INST_TYPE = (
     (1, 'fundacja'),
@@ -20,6 +23,9 @@ class Institution(models.Model):
     type = models.SmallIntegerField(choices=INST_TYPE, default=1)
     categories = models.ManyToManyField(Category)
 
+    def __str__(self):
+        return self.name
+
 
 class Donation(models.Model):
     quantity = models.SmallIntegerField()
@@ -33,4 +39,7 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Donation {self.id} for {self.institution}'
 
