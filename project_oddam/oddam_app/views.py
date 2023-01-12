@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.views import View
 from django.core.paginator import Paginator
 
 from oddam_app.models import Donation, Institution
+from oddam_app.forms import UserRegisterForm
+
 
 class LandingPageView(View):
     def get(self, request):
@@ -46,8 +49,39 @@ class LoginView(View):
     def get(self, request):
         return render(request, 'login.html')
 
+    def post(self, request):
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('start')
+        return render(request, "login.html")
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('start')
+
 
 class RegisterView(View):
     def get(self, request):
-        return render(request, 'register.html')
+        form = UserRegisterForm()
+        return render(request, 'register.html', {'form': form})
+
+    def post(self, request):
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            username = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            email = form.cleaned_data.get('email')
+            new_user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username,
+                                                password=password, email=email)
+            return redirect('login')
+
+        else:
+            return render(request, 'register.html', {'form': form})
 
