@@ -17,13 +17,15 @@ from django.contrib import admin
 from django.urls import path
 
 from oddam_app.views import LandingPageView, AddDonationView, LoginView, \
-    RegisterView, LogoutView
+    RegisterView, LogoutView, InstitutionAjaxView, FormConfirmationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LandingPageView.as_view(), name='start'),
     path('add_donation/', AddDonationView.as_view(), name='donation'),
+    path('ajax/institutions/', InstitutionAjaxView.as_view(), name='ajax-institutions'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('donation_confirmation/', FormConfirmationView.as_view(), name='form-confirmation'),
 ]
