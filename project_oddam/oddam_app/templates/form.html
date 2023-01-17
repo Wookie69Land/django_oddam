@@ -101,8 +101,8 @@
 
 
           <!-- STEP 4 -->
-          <div data-step="3">
-            <h3>Wybierz organizację, której chcesz pomóc:</h3>
+          <div data-step="3" id="institution_radio">
+{% comment %}            <h3>Wybierz organizację, której chcesz pomóc:</h3>
             {% for institution in institutions %}
             <div class="form-group form-group--checkbox">
               <label>
@@ -116,7 +116,7 @@
                 </span>
               </label>
             </div>
-            {% endfor %}
+            {% endfor %}{% endcomment %}
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
@@ -233,16 +233,15 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src='{% static "app.js" %}'></script>
-
-{% endblock %}
-
 {% block javascript %}
 
-    <script type="text/javascript">
+    <script>
         $("#categories_ajax").click(function (e) {
-            e.preventDefault();
-            console.log('hello');
-            let categories = $("#categories").val();
+            let categories = [];
+            $.each($("#categories:checked"), function () {
+                categories.push($(this).val());
+            });
+            console.log(categories);
 
             $.ajax({
                 url: '{% url "ajax-institutions" %}',
@@ -251,10 +250,16 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    let institutions = data.institutions;
+                    $("#institution_radio").prepend(data);
+                },
+                error: function (data) {
+                    console.log(data.errors);
                 }
             });
         })
     </script>
 
 {% endblock %}
+
+{% endblock %}
+

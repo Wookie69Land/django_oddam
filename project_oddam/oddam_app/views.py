@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.views import View
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
 
 from oddam_app.models import Donation, Institution, Category
 from oddam_app.forms import UserRegisterForm
@@ -48,12 +50,10 @@ class AddDonationView(LoginRequiredMixin, View):
         return render(request, 'form.html', {'categories': categories,
                                              'institutions': institutions})
     def post(self, request):
-        categories = request.POST.get('categories')
-        if not categories:
-            print('nie mam')
-        print(categories)
+        categories_id = request.POST.getlist('categories')
+        categories = Category.objects.filter(id__in=categories_id).distinct()
         quantity = request.POST.get('bags')
-        institution = request.POST.get('organization')
+        institution = get_object_or_404(Institution, id=request.POST.get('organization'))
         print(institution)
         address = request.POST.get('address')
         city = request.POST.get('city')
@@ -63,7 +63,6 @@ class AddDonationView(LoginRequiredMixin, View):
         pick_up_time = request.POST.get('time')
         pick_up_comment = request.POST.get('more_info')
         new_donation = Donation.objects.create(quantity=quantity,
-                                               categories=categories,
                                                institution=institution,
                                                address=address,
                                                phone_number=phone_number,
@@ -73,7 +72,8 @@ class AddDonationView(LoginRequiredMixin, View):
                                                pick_up_time=pick_up_time,
                                                pick_up_comment=pick_up_comment,
                                                user=request.user)
-
+        new_donation.categories.add(*categories)
+        new_donation.save()
         return redirect('form-confirmation')
 
 
@@ -84,13 +84,16 @@ class FormConfirmationView(View):
 
 class InstitutionAjaxView(View):
     def get(self, request):
-        if request.is_ajax():
-            categories = request.GET.get('categories')
-            institutions = Institution.objects.filter(categories__in=categories).distinct()
-            data = {
-                'institutions': institutions,
-            }
-            return JsonResponse(data, status=200)
+        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+            categories = request.GET.getlist('categories[]')
+            institutions_query = Institution.objects.filter(categories__in=categories).distinct()
+            institutions = []
+            for i in institutions_query:
+                institution = model_to_dict(i)
+                del institution['categories']
+                institutions.append(institution)
+            data = render_to_string('institution_form.html', {'institutions': institutions})
+            return JsonResponse(data, safe=False)
 
 
 class LoginView(View):
