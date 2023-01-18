@@ -11,6 +11,8 @@ from django.template.loader import render_to_string
 from oddam_app.models import Donation, Institution, Category
 from oddam_app.forms import UserRegisterForm
 
+import random
+
 
 class LandingPageView(View):
     def get(self, request):
