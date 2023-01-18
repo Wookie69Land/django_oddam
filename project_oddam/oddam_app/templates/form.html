@@ -172,12 +172,12 @@
             </div>
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="btn next-step" id="toConfirm">Dalej</button>
             </div>
           </div>
 
           <!-- STEP 6 -->
-          <div data-step="5">
+          <div data-step="5" id="confirmation">
             <h3>Podsumowanie Twojej darowizny</h3>
 
             <div class="summary">
@@ -186,14 +186,14 @@
                 <ul>
                   <li>
                     <span class="icon icon-bag"></span>
-                    <span class="summary--text"
+                    <span class="summary--text" id="conf-quantity"
                       >4 worki ubrań w dobrym stanie dla dzieci</span
                     >
                   </li>
 
                   <li>
                     <span class="icon icon-hand"></span>
-                    <span class="summary--text"
+                    <span class="summary--text" id="conf-institution"
                       >Dla fundacji "Mam marzenie" w Warszawie</span
                     >
                   </li>
@@ -241,7 +241,6 @@
             $.each($("#categories:checked"), function () {
                 categories.push($(this).val());
             });
-            console.log(categories);
 
             $.ajax({
                 url: '{% url "ajax-institutions" %}',
@@ -256,6 +255,28 @@
                     console.log(data.errors);
                 }
             });
+        })
+        $("#toConfirm").click(function () {
+            let quantity = document.querySelector("input[name='bags']").value;
+            let bagsString = 'Ilość worków: ' + quantity;
+            console.log(bagsString)
+            document.getElementById("con-quantity").innerText = bagsString;
+
+            let institutionChecked = document.querySelector("input[name='organization']:checked");
+            let institutionSpan = institutionChecked.nextElementSibling.nextElementSibling;
+            let institution = institutionSpan.firstElementChild.innerText;
+            document.getElementById("conf-institution").innerText = 'Dla:' + institution;
+
+            let address = document.querySelector("input[name='address']").value;
+            let city = document.querySelector("input[name='city']").value;
+            let postcode = document.querySelector("input[name='postcode']").value;
+            let phone = document.querySelector("input[name='phone']").value;
+            let data = document.querySelector("input[name='data']").value;
+            let time = document.querySelector("input[name='time']").value;
+            let comment = document.querySelector("textarea[name='more_info']").value;
+
+            console.log(address)
+
         })
     </script>
 
