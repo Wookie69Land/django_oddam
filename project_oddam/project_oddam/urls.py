@@ -20,7 +20,7 @@ from oddam_app.views import LandingPageView, AddDonationView, LoginView, \
     RegisterView, LogoutView, InstitutionAjaxView, FormConfirmationView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('', LandingPageView.as_view(), name='start'),
     path('add_donation/', AddDonationView.as_view(), name='donation'),
     path('ajax/institutions/', InstitutionAjaxView.as_view(), name='ajax-institutions'),
