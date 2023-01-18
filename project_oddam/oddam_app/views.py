@@ -136,3 +136,18 @@ class RegisterView(View):
         else:
             return render(request, 'register.html', {'form': form})
 
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        donations = get_list_or_404(Donation, user=request.user)
+        user_bags = 0
+        institutions = []
+        for donation in donations:
+            user_bags += donation.quantity
+            if donation.institution not in institutions:
+                institutions.append(donation.institution)
+        user_institutions = len(institutions)
+        return render(request, 'profile.html', {'donations': donations,
+                                                'user_bags': user_bags,
+                                                'user_institutions': user_institutions})
+

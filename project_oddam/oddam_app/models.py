@@ -41,5 +41,5 @@ class Donation(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return f'Donation {self.id} for {self.institution}'
+        return f'Donation nr {self.id} for {self.institution}'
 

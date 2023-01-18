@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+    <section id="profile">
+      <h2>Dane użytkownika</h2>
+          <ul>
+              <h1>Imię: {{ request.user.first_name }}</h1>
+              <h1>Nazwisko: {{ request.user.last_name }}</h1>
+              <h1>Email: {{ request.user.email }}</h1>
+          </ul>
+        </div>
+    </section>
+    <section id="stats" class="stats">
+      <div class="container container--85">
+        <div class="stats--item">
+          <em>{{ user_bags }}</em>
+          <h3>Oddanych worków</h3>
+        </div>
+
+        <div class="stats--item">
+          <em>{{ user_institutions }}</em>
+          <h3>Wspartych organizacji</h3>
+        </div>
+
+      </div>
+    </section>
+    <section>
+      <h2>Twoje dary</h2>
+          <ul>
+            {% for donation in donations %}
+              <li>
+                  <h4>{{ forloop.counter }}</h4>
+                  <h1> Dotacja dla: {{ donation.institution }}</h1>
+                  <h1>Ilość worków: {{ donation.quantity }}</h1>
+                  <h1>Rodzaj przekazanych darów:
+                      {% for category in donation.categories.all %}
+                      {{ category }},
+                      {% endfor %}
+                  </h1>
+                  <h1>Data przekazania: {{ donation.pick_up_date }}</h1>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+    </section>
+
+{% endblock %}
