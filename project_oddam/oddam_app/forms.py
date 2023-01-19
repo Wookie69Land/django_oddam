@@ -55,6 +55,6 @@ class UpdatePasswordForm(forms.Form):
     def clean_password_repeat(self):
         if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):
             raise ValidationError('Hasła nie są takie same!')
-        return self.cleaned_data.get('password2')
+        return self.cleaned_data.get('password')
 
 

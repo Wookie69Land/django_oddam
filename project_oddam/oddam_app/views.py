@@ -193,7 +193,8 @@ class EditPasswordView(LoginRequiredMixin, View):
             if check_password(old_password, password):
                 user = request.user
                 user.set_password(new_password)
-                return redirect('profile')
+                user.save()
+                return redirect('login')
         return render(request, 'password_form.html', {'form': form})
 
 
