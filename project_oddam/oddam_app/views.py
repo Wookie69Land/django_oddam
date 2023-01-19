@@ -139,7 +139,7 @@ class RegisterView(View):
 
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        donations = get_list_or_404(Donation, user=request.user)
+        donations = Donation.objects.filter(user=request.user).order_by('-pick_up_date')
         user_bags = 0
         institutions = []
         for donation in donations:
