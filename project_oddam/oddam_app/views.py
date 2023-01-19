@@ -7,9 +7,10 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
+from django.contrib.auth.hashers import check_password
 
 from oddam_app.models import Donation, Institution, Category
-from oddam_app.forms import UserRegisterForm
+from oddam_app.forms import UserRegisterForm, UserPasswordForm, EditProfileForm, UpdatePasswordForm
 
 
 class LandingPageView(View):
@@ -54,7 +55,6 @@ class AddDonationView(LoginRequiredMixin, View):
         categories = Category.objects.filter(id__in=categories_id).distinct()
         quantity = request.POST.get('bags')
         institution = get_object_or_404(Institution, id=request.POST.get('organization'))
-        print(institution)
         address = request.POST.get('address')
         city = request.POST.get('city')
         zip_code = request.POST.get('postcode')
@@ -150,4 +150,50 @@ class ProfileView(LoginRequiredMixin, View):
         return render(request, 'profile.html', {'donations': donations,
                                                 'user_bags': user_bags,
                                                 'user_institutions': user_institutions})
+
+
+class GoToEditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = UserPasswordForm()
+        return render(request, 'password_form.html', {'form': form})
+    def post(self, request):
+        password = request.user.password
+        form = UserPasswordForm(request.POST)
+        if form.is_valid():
+            password_to_check = form.cleaned_data.get('password')
+            if check_password(password_to_check, password):
+                return redirect('edit-profile')
+        form = UserPasswordForm(request.POST)
+        return render(request, 'password_form.html', {'form': form})
+
+
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = EditProfileForm(instance=request.user)
+        return render(request, 'edit_profile_form.html', {'form': form})
+    def post(self, request):
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        form = EditProfileForm(request.POST, instance=request.user)
+        return render(request, 'edit_profile_form.html', {'form': form})
+
+
+class EditPasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = UpdatePasswordForm()
+        return render(request, 'password_form.html', {'form': form})
+    def post(self, request):
+        form = UpdatePasswordForm(request.POST)
+        if form.is_valid():
+            password = request.user.password
+            old_password = form.cleaned_data.get('old_password')
+            new_password = form.cleaned_data.get('password')
+            if check_password(old_password, password):
+                user = request.user
+                user.set_password(new_password)
+                return redirect('profile')
+        return render(request, 'password_form.html', {'form': form})
+
 

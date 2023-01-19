@@ -104,23 +104,25 @@
 
         <ul class="help--slides-pagination">
             {% if foundations.has_previous %}
-          <li><a href="?page1=1" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
+          <li><a href="?page1=1#help" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
                 {% if foundations.previous_page_number != 1  %}
-          <li><a href="?page1={{ foundations.previous_page_number }}" class="btn btn--small btn--without-border"
+          <li><a href="?page1={{ foundations.previous_page_number }}#help" class="btn btn--small btn--without-border"
                  data-page="{{ foundations.previous_page_number }}">poprzednia</a></li>
                  {% endif %}
             {% endif %}
 
-          <li><a href="?page1={{ foundations.number }}" class="btn btn--small btn--without-border active"
+          <li><a href="?page1={{ foundations.number }}#help" class="btn btn--small btn--without-border active"
                  data-page="{{ foundations.number }}">{{ foundations.number }}</a></li>
 
             {% if foundations.has_next %}
-          <li><a href="?page1={{ foundations.next_page_number }}"
+          <li><a href="?page1={{ foundations.next_page_number }}#help"
                  class="btn btn--small btn--without-border" data-page="{{ foundations.next_page_number }}">
               {{ foundations.next_page_number }}</a></li>
-          <li><a href="?page1={{ foundations.paginator.num_pages }}"
+                {% if foundations.paginator.num_pages != foundations.next_page_number  %}
+          <li><a href="?page1={{ foundations.paginator.num_pages }}#help"
                  class="btn btn--small btn--without-border"
                  data-page="{{ foundations.paginator.num_pages }}">ostatnia</a></li>
+                {% endif %}
             {% endif %}
         </ul>
 
@@ -154,23 +156,25 @@
 
         <ul class="help--slides-pagination">
           {% if organizations.has_previous %}
-          <li><a href="?page2=1" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
+          <li><a href="?page2=1#help" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
                 {% if organizations.previous_page_number != 1  %}
-          <li><a href="?page2={{ organizations.previous_page_number }}" class="btn btn--small btn--without-border"
+          <li><a href="?page2={{ organizations.previous_page_number }}#help" class="btn btn--small btn--without-border"
                  data-page="{{ organizations.previous_page_number }}">poprzednia</a></li>
                  {% endif %}
             {% endif %}
 
-          <li><a href="?page2={{ organizations.number }}" class="btn btn--small btn--without-border active"
+          <li><a href="?page2={{ organizations.number }}#help" class="btn btn--small btn--without-border active"
                  data-page="{{ organizations.number }}">{{ organizations.number }}</a></li>
 
             {% if organizations.has_next %}
-          <li><a href="?page2={{ organizations.next_page_number }}"
+          <li><a href="?page2={{ organizations.next_page_number }}#help"
                  class="btn btn--small btn--without-border" data-page="{{ organizations.next_page_number }}">
               {{ organizations.next_page_number }}</a></li>
-          <li><a href="?page2={{ organizations.paginator.num_pages }}"
+                {% if organizations.paginator.num_pages != organizations.next_page_number  %}
+          <li><a href="?page2={{ organizations.paginator.num_pages }}#help"
                  class="btn btn--small btn--without-border"
                  data-page="{{ organizations.paginator.num_pages }}">ostatnia</a></li>
+                {% endif %}
             {% endif %}
         </ul>
 
@@ -199,23 +203,25 @@
 
         <ul class="help--slides-pagination">
           {% if collections.has_previous %}
-          <li><a href="?page3=1" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
+          <li><a href="?page3=1#help" class="btn btn--small btn--without-border" data-page="1">pierwsza</a></li>
                 {% if collections.previous_page_number != 1  %}
-          <li><a href="?page3={{ collections.previous_page_number }}" class="btn btn--small btn--without-border"
+          <li><a href="?page3={{ collections.previous_page_number }}#help" class="btn btn--small btn--without-border"
                  data-page="{{ collections.previous_page_number }}">poprzednia</a></li>
                  {% endif %}
             {% endif %}
 
-          <li><a href="?page3={{ collections.number }}" class="btn btn--small btn--without-border active"
+          <li><a href="?page3={{ collections.number }}#help" class="btn btn--small btn--without-border active"
                  data-page="{{ collections.number }}">{{ foundations.number }}</a></li>
 
             {% if collections.has_next %}
-          <li><a href="?page3={{ collections.next_page_number }}"
+          <li><a href="?page3={{ collections.next_page_number }}#help"
                  class="btn btn--small btn--without-border" data-page="{{ collections.next_page_number }}">
               {{ collections.next_page_number }}</a></li>
-          <li><a href="?page3={{ collections.paginator.num_pages }}"
+                {% if collections.paginator.num_pages != collections.next_page_number  %}
+          <li><a href="?page3={{ collections.paginator.num_pages }}#help"
                  class="btn btn--small btn--without-border"
                  data-page="{{ collections.paginator.num_pages }}">ostatnia</a></li>
+                {% endif %}
             {% endif %}
         </ul>
 

@@ -18,7 +18,7 @@ from django.urls import path
 
 from oddam_app.views import LandingPageView, AddDonationView, LoginView, \
     RegisterView, LogoutView, InstitutionAjaxView, FormConfirmationView, \
-    ProfileView
+    ProfileView, GoToEditProfileView, EditProfileView, EditPasswordView
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
@@ -30,4 +30,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('donation_confirmation/', FormConfirmationView.as_view(), name='form-confirmation'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/go-to-edit/', GoToEditProfileView.as_view(), name='go-to-profile'),
+    path('profile/edit/', EditProfileView.as_view(), name='edit-profile'),
+    path('profile/password/', EditPasswordView.as_view(), name='edit-password'),
 ]

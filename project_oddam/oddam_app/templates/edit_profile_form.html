@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+    <section class="login-page" id="register-form">
+      <h2>Edytuj profil</h2>
+      <form method="post">
+          {% csrf_token %}
+
+          {% for field in form %}
+        <div class="form-group">
+            {{ field.errors }}{{ field }}
+        </div><br>
+          {% endfor %}
+
+        <div class="form-group form-group--buttons">
+          <a href="{% url 'edit-password' %}#password-form" class="btn btn--without-border">Zmień hasło</a>
+          <button class="btn" type="submit">Aktualizuj dane</button>
+        </div>
+      </form>
+    </section>
+
+{% endblock %}
