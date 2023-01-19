@@ -216,7 +216,7 @@
                   <ul>
                     <li id="date">13/12/2018</li>
                     <li>15:40</li>
-                    <li>Brak uwag</li>
+                    <li></li>
                   </ul>
                 </div>
               </div>
@@ -259,7 +259,6 @@
         $("#toConfirm").click(function () {
             let quantity = document.querySelector("input[name='bags']").value;
             let bagsString = 'Ilość worków: ' + quantity;
-            console.log(bagsString)
             document.getElementById("conf-quantity").innerText = bagsString;
 
             let institutionChecked = document.querySelector("input[name='organization']:checked");
@@ -275,17 +274,17 @@
             let postcode = document.querySelector("input[name='postcode']").value;
             addressLi.nextElementSibling.nextElementSibling.innerText = postcode;
             let phone = document.querySelector("input[name='phone']").value;
-            addressLi.parentNode.lastChild.innerText = phone;
+            addressLi.parentNode.lastElementChild.innerText = phone;
             let date = document.querySelector("input[name='data']").value;
             let dateLi = document.getElementById("date");
             dateLi.innerText = date;
             let time = document.querySelector("input[name='time']").value;
             dateLi.nextElementSibling.innerText = time;
             let comment = document.querySelector("textarea[name='more_info']").value;
-            if (comment =! "") {
-                dateLi.parentNode.lastChild.innerText = comment;
+            if (comment.length !== 0) {
+                dateLi.parentNode.lastElementChild.innerText = comment;
             } else {
-                dateLi.parentNode.lastChild.innerText = 'Brak uwag';
+                dateLi.parentNode.lastElementChild.innerText = 'Brak uwag';
             }
 
         })
