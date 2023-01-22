@@ -9,6 +9,9 @@ from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from django.contrib.auth.hashers import check_password
 
+from .email import activate_user
+from .tasks import send_activation_email_task
+
 from oddam_app.models import Donation, Institution, Category
 from oddam_app.forms import UserRegisterForm, UserPasswordForm, EditProfileForm, UpdatePasswordForm
 
@@ -104,6 +107,10 @@ class LoginView(View):
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+        print(user.is_active)
+        # if user.is_active == False:
+        #     message = "Musisz aktywować konto. Sprawdź, czy nie dostałeś linka aktywacyjnego na email."
+        #     return render(request, 'user_message.html', {'message': message})
         if user is not None:
             login(request, user)
             return redirect('start')
@@ -130,8 +137,10 @@ class RegisterView(View):
             password = form.cleaned_data.get('password')
             email = form.cleaned_data.get('email')
             new_user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username,
-                                                password=password, email=email)
-            return redirect('login')
+                                                password=password, email=email, is_active=False)
+            send_activation_email_task(request, new_user)
+            message = 'Dziękujemy za rejestrację. Na maila prześlemy link do aktywacji.'
+            return render(request, 'user_message.html', {'message': message})
 
         else:
             return render(request, 'register.html', {'form': form})
@@ -196,5 +205,15 @@ class EditPasswordView(LoginRequiredMixin, View):
                 user.save()
                 return redirect('login')
         return render(request, 'password_form.html', {'form': form})
+
+
+class ActivateAccountView(View):
+    def get(self, request, uidb64, token):
+        success = activate_user(uidb64, token)
+        if success:
+            message = "Teraz możesz się zalogować."
+            return render(request, 'user_message.html', {'message': message})
+        message = 'Nie udało się aktywować konta. Spróbuj jeszcze raz założyć konto.'
+        return render(request, 'user_message.html', {'message': message})
 
 

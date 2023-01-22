@@ -150,7 +150,9 @@ EMAIL_HOST_USER = 'oddam.app@gmail.com'
 EMAIL_HOST_PASSWORD = celery_email_password
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'fitubi.client@gmail.com'
+DEFAULT_FROM_EMAIL = 'oddam.app@gmail.com'
+
+PASSWORD_RESET_TIMEOUT = 14400
 
 #CELERY SETTINGS
 
