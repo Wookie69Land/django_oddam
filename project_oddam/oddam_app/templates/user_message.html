@@ -6,14 +6,14 @@
       <div class="slogan container container--90">
           <h2>
             {{ message }}
-          </h2>
-
-      </div>
+          </h2><br>
             {% if login_button %}
-                <div class="form-group form-group--buttons">
+                <div>
                     <a href="{% url 'login' %}#login-form" class="btn btn--without-border">Zaloguj się</a>
                 </div>
             {% endif %}
+      </div>
+
     </header>
 
 {% endblock %}

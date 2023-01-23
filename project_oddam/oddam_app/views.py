@@ -108,11 +108,10 @@ class LoginView(View):
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        print(user.is_active)
-        if not user.is_active:
-            message = "Musisz aktywować konto. Sprawdź, czy nie dostałeś linka aktywacyjnego na email."
-            return render(request, 'user_message.html', {'message': message})
         if user is not None:
+            if not user.is_active:
+                message = "Musisz aktywować konto. Sprawdź, czy nie dostałeś linka aktywacyjnego na email."
+                return render(request, 'user_message.html', {'message': message})
             login(request, user)
             return redirect('start')
         return render(request, "login.html")
@@ -248,7 +247,6 @@ class ResetPasswordView(View):
     def post(self, request, uidb64, token):
         form = ResetPasswordForm(request.POST)
         user = check_token(uidb64, token)
-        print(user)
         if form.is_valid():
             new_password = form.cleaned_data.get('password')
             user.set_password(new_password)
@@ -257,7 +255,6 @@ class ResetPasswordView(View):
             login_button = True
             return render(request, 'user_message.html', {'message': message,
                                                          'login_button': login_button})
-        message = 'Nie udało się zresetować hasła. Spróbuj jeszcze raz.'
-        return render(request, 'user_message.html', {'message': message})
+        return render(request, 'password_form.html', {'form': form})
 
 
