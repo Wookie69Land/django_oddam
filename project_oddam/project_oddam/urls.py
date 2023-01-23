@@ -19,7 +19,7 @@ from django.urls import path
 from oddam_app.views import LandingPageView, AddDonationView, LoginView, \
     RegisterView, LogoutView, InstitutionAjaxView, FormConfirmationView, \
     ProfileView, GoToEditProfileView, EditProfileView, EditPasswordView, \
-    ActivateAccountView
+    ActivateAccountView, ForgottenPasswordView, ResetPasswordView
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
@@ -35,4 +35,6 @@ urlpatterns = [
     path('profile/edit/', EditProfileView.as_view(), name='edit-profile'),
     path('profile/password/', EditPasswordView.as_view(), name='edit-password'),
     path('activate/<uidb64>/<token>', ActivateAccountView.as_view(), name='activate'),
+    path('forgotten/password/', ForgottenPasswordView.as_view(), name='forgotten-password'),
+    path('reset_password/<uidb64>/<token>', ResetPasswordView.as_view(), name='reset-password'),
 ]

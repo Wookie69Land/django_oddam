@@ -9,11 +9,12 @@ from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 from django.contrib.auth.hashers import check_password
 
-from .email import activate_user
-from .tasks import send_activation_email_task
+from .email import activate_user, check_token
+from .tasks import send_activation_email_task, send_password_email_task
 
 from oddam_app.models import Donation, Institution, Category
-from oddam_app.forms import UserRegisterForm, UserPasswordForm, EditProfileForm, UpdatePasswordForm
+from oddam_app.forms import UserRegisterForm, UserPasswordForm, EditProfileForm, \
+    UpdatePasswordForm, UserEmailForm, ResetPasswordForm
 
 
 class LandingPageView(View):
@@ -108,9 +109,9 @@ class LoginView(View):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         print(user.is_active)
-        # if user.is_active == False:
-        #     message = "Musisz aktywować konto. Sprawdź, czy nie dostałeś linka aktywacyjnego na email."
-        #     return render(request, 'user_message.html', {'message': message})
+        if not user.is_active:
+            message = "Musisz aktywować konto. Sprawdź, czy nie dostałeś linka aktywacyjnego na email."
+            return render(request, 'user_message.html', {'message': message})
         if user is not None:
             login(request, user)
             return redirect('start')
@@ -212,8 +213,51 @@ class ActivateAccountView(View):
         success = activate_user(uidb64, token)
         if success:
             message = "Teraz możesz się zalogować."
-            return render(request, 'user_message.html', {'message': message})
+            login_button = True
+            return render(request, 'user_message.html', {'message': message,
+                                                         'login_button': login_button})
         message = 'Nie udało się aktywować konta. Spróbuj jeszcze raz założyć konto.'
+        return render(request, 'user_message.html', {'message': message})
+
+
+class ForgottenPasswordView(View):
+    def get(self, request):
+        form = UserEmailForm()
+        return render(request, 'email_form.html', {'form': form})
+    def post(self, request):
+        form = UserEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            user = get_object_or_404(User, email=email)
+            send_password_email_task(request, user)
+            message = 'Na maila prześlemy link do zmiany hasła.'
+            return render(request, 'user_message.html', {'message': message})
+
+        else:
+            return render(request, 'register.html', {'form': form})
+
+
+class ResetPasswordView(View):
+    def get(self, request, uidb64, token):
+        success = check_token(uidb64, token)
+        if success:
+            form = ResetPasswordForm()
+            return render(request, 'password_form.html', {'form': form})
+        message = 'Nie udało się zresetować hasła. Spróbuj jeszcze raz.'
+        return render(request, 'user_message.html', {'message': message})
+    def post(self, request, uidb64, token):
+        form = ResetPasswordForm(request.POST)
+        user = check_token(uidb64, token)
+        print(user)
+        if form.is_valid():
+            new_password = form.cleaned_data.get('password')
+            user.set_password(new_password)
+            user.save()
+            message = "Teraz możesz się zalogować."
+            login_button = True
+            return render(request, 'user_message.html', {'message': message,
+                                                         'login_button': login_button})
+        message = 'Nie udało się zresetować hasła. Spróbuj jeszcze raz.'
         return render(request, 'user_message.html', {'message': message})
 
 

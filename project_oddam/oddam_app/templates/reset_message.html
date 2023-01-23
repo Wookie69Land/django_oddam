@@ -1,0 +1,7 @@
+{% autoescape off %}
+Cześć {{ user }},
+
+Proszę kliknij w poniższy link, żeby zresetować hasło:
+
+http://{{ domain }}{% url 'reset-password' uidb64=uid token=token %}#password-form
+{% endautoescape %}

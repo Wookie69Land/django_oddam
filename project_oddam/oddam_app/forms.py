@@ -58,3 +58,24 @@ class UpdatePasswordForm(forms.Form):
         return self.cleaned_data.get('password')
 
 
+class UserEmailForm(ModelForm):
+    email = forms.CharField(label='', widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def clean_email(self):
+        if not User.objects.filter(email=self.cleaned_data.get('email')).exists():
+            raise ValidationError('Nie ma użytkownika z takim mailem!')
+        return self.cleaned_data.get('email')
+
+
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}))
+    password2 = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz nowe hasło'}))
+
+    def clean_password_repeat(self):
+        if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):
+            raise ValidationError('Hasła nie są takie same!')
+        return self.cleaned_data.get('password')
+
