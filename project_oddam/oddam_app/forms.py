@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.core.validators import ValidationError
+from django.contrib.auth.password_validation import validate_password
 
 from oddam_app.models import *
 
@@ -9,7 +10,8 @@ class UserRegisterForm(ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
     email = forms.CharField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}),
+                               validators=[validate_password])
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz hasło'}))
     class Meta:
         model = User
@@ -49,7 +51,8 @@ class EditProfileForm(ModelForm):
 
 class UpdatePasswordForm(forms.Form):
     old_password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Stare hasło'}))
-    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}))
+    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}),
+                               validators=[validate_password])
     password2 = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz nowe hasło'}))
 
     def clean_password_repeat(self):
@@ -71,7 +74,8 @@ class UserEmailForm(ModelForm):
 
 
 class ResetPasswordForm(forms.Form):
-    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}))
+    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}),
+                               validators=[validate_password])
     password2 = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz nowe hasło'}))
 
     def clean_password_repeat(self):

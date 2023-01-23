@@ -7,7 +7,7 @@ class NumberValidator(object):
     def validate(self, password, user=None):
         if not re.findall('\d', password):
             raise ValidationError(
-                _("The password must contain at least 1 digit, 0-9."),
+                _("Twoje hasło musi zawierać przynajmniej jedną cyfrę od 0-9."),
                 code='password_no_number',
             )
 
@@ -21,7 +21,7 @@ class UppercaseValidator(object):
     def validate(self, password, user=None):
         if not re.findall('[A-Z]', password):
             raise ValidationError(
-                _("The password must contain at least 1 uppercase letter, A-Z."),
+                _("Twoje hasło musi zawierać przynajmniej jedną wielką literę."),
                 code='password_no_upper',
             )
 
@@ -35,7 +35,7 @@ class SymbolValidator(object):
     def validate(self, password, user=None):
         if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
             raise ValidationError(
-                _("The password must contain at least 1 special character: " +
+                _("Twoje hasło musi zawierać przynajmniej jeden znak specjalny: " +
                   "()[]{}|\`~!@#$%^&*_-+=;:'\",<>./?"),
                 code='password_no_symbol',
             )
