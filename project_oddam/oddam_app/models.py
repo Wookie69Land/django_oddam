@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+from django.core.exceptions import PermissionDenied
 
 
 class Category(models.Model):
@@ -43,4 +46,14 @@ class Donation(models.Model):
 
     def __str__(self):
         return f'Donation nr {self.id} for {self.institution}'
+
+
+@receiver(pre_delete, sender=User)
+def delete_user(sender, instance, **kwargs):
+    superusers = User.objects.filter(is_superuser=True)
+    if instance.is_superuser:
+        if superusers.count() == 1:
+            raise PermissionDenied("Nie możesz skasować ostatniego superusera")
+        if sender == instance:
+            raise PermissionDenied("Nie możesz skasować samego siebie")
 
