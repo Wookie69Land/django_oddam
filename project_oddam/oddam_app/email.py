@@ -6,7 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .tokens import account_activation_token
 
@@ -66,3 +66,14 @@ def check_token(uidb64, token):
     else:
         return False
 
+
+def contact_email(name, surname, contact_message):
+    for superuser in get_list_or_404(User, is_superuser=True):
+        email_to = superuser.email
+        title = 'Próba kontaktu'
+        message = render_to_string('contact-message.html', {
+            'user': f"{name} {surname}",
+            'message': contact_message,
+        })
+        email = EmailMessage(title, message, settings.DEFAULT_FROM_EMAIL, to=[email_to])
+        return email.send(fail_silently=False)
