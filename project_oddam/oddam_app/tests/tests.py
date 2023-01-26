@@ -16,7 +16,7 @@ def test_user_creation(client, set_up):
 @pytest.mark.django_db
 def test_landing(client, set_up):
     url = reverse('start')
-    response = client.post(url)
+    response = client.get(url)
     assert response.status_code == 200
 
 
