@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     'django_celery_results',
+    'django_faker',
     'oddam_app',
 ]
 
@@ -177,3 +178,8 @@ CELERY_RESULT_BACKEND = 'django-db'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
+
+#FAKER SETTINGS
+
+FAKER_LOCALE = None
+FAKER_PROVIDERS = None
