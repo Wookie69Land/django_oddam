@@ -1,6 +1,7 @@
 import pytest
 
 from django.shortcuts import reverse
+from django.db.models import Sum, Count
 
 from .testutils import *
 
@@ -15,9 +16,16 @@ def test_user_creation(client, set_up):
 
 @pytest.mark.django_db
 def test_landing(client, set_up):
+
+    bags = Donation.objects.aggregate(Sum('quantity'))
+    bags = bags['quantity__sum']
+    institutions = Donation.objects.values('institution').distinct().count()
+
     url = reverse('start')
     response = client.get(url)
     assert response.status_code == 200
+    assert bags == response.context['bags']
+    assert institutions == response.context['institutions']
 
 
 # @pytest.mark.django_db
