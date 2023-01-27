@@ -1,4 +1,3 @@
-from random import sample, randint, choice
 from faker import Faker, Factory
 
 import random
@@ -73,5 +72,9 @@ def create_superuser():
 
 def random_user():
     users = User.objects.all()
-    return choice(users)
+    return random.choice(users)
 
+
+def random_institution():
+    institutions = Institution.objects.all()
+    return random.choice(institutions)
