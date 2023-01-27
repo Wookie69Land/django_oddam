@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect, HttpResponse
+from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -48,12 +48,7 @@ class LandingPageView(View):
                                               'collections': collections})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
 
 class AddDonationView(LoginRequiredMixin, View):
@@ -64,10 +59,7 @@ class AddDonationView(LoginRequiredMixin, View):
                                              'institutions': institutions})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
+            return process_contact_form(request)
 
         categories_id = request.POST.getlist('categories')
         categories = Category.objects.filter(id__in=categories_id).distinct()
@@ -100,12 +92,7 @@ class FormConfirmationView(View):
         return render(request, 'form-confirmation.html')
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
 
 class InstitutionAjaxView(View):
@@ -128,12 +115,8 @@ class LoginView(View):
 
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
+
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
@@ -159,12 +142,7 @@ class RegisterView(View):
 
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -198,12 +176,7 @@ class ProfileView(LoginRequiredMixin, View):
                                                 'user_institutions': user_institutions})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
 
 class GoToEditProfileView(LoginRequiredMixin, View):
@@ -212,12 +185,7 @@ class GoToEditProfileView(LoginRequiredMixin, View):
         return render(request, 'password_form.html', {'form': form})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         password = request.user.password
         form = UserPasswordForm(request.POST)
@@ -235,12 +203,7 @@ class EditProfileView(LoginRequiredMixin, View):
         return render(request, 'edit_profile_form.html', {'form': form})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         form = EditProfileForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -256,12 +219,7 @@ class EditPasswordView(LoginRequiredMixin, View):
         return render(request, 'password_form.html', {'form': form})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         form = UpdatePasswordForm(request.POST)
         if form.is_valid():
@@ -288,12 +246,7 @@ class ActivateAccountView(View):
         return render(request, 'user_message.html', {'message': message})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
 
 class ForgottenPasswordView(View):
@@ -302,12 +255,7 @@ class ForgottenPasswordView(View):
         return render(request, 'email_form.html', {'form': form})
     def post(self, request):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         form = UserEmailForm(request.POST)
         if form.is_valid():
@@ -331,12 +279,7 @@ class ResetPasswordView(View):
         return render(request, 'user_message.html', {'message': message})
     def post(self, request, uidb64, token):
         if request.POST.get('contact-message'):
-            name = request.POST.get('contact-name')
-            surname = request.POST.get('contact-surname')
-            contact_message = request.POST.get('contact-message')
-            contact_email_task(name, surname, contact_message)
-            message = "Dziękujemy za kontakt."
-            return render(request, 'user_message.html', {'message': message})
+            return process_contact_form(request)
 
         form = ResetPasswordForm(request.POST)
         user = check_token(uidb64, token)
@@ -351,3 +294,10 @@ class ResetPasswordView(View):
         return render(request, 'password_form.html', {'form': form})
 
 
+def process_contact_form(request):
+    name = request.POST.get('contact-name')
+    surname = request.POST.get('contact-surname')
+    contact_message = request.POST.get('contact-message')
+    contact_email_task(name, surname, contact_message)
+    message = "Dziękujemy za kontakt."
+    return render(request, 'user_message.html', {'message': message})
