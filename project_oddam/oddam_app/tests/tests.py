@@ -61,7 +61,6 @@ def test_send_report(client, set_up):
     user = create_superuser()
     url = reverse('forgotten-password')
     response = client.post(url, {'email': user.email})
-    print(response.context)
     assert response.status_code == 200
     assert len(mail.outbox) == 1
     email = mail.outbox[0]
