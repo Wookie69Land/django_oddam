@@ -2,6 +2,8 @@ import pytest
 
 from django.shortcuts import reverse
 from django.db.models import Sum, Count
+from django.core import mail
+
 from datetime import datetime, date
 
 from .testutils import *
@@ -52,5 +54,18 @@ def test_donation_page(client, set_up):
     assert 'Street' == donation.address
     assert '111222333' == donation.phone_number
     assert 69 == donation.quantity
+
+
+@pytest.mark.django_db
+def test_send_report(client, set_up):
+    user = create_superuser()
+    url = reverse('forgotten-password')
+    response = client.post(url, {'email': user.email})
+    print(response.context)
+    assert response.status_code == 200
+    assert len(mail.outbox) == 1
+    email = mail.outbox[0]
+    assert email.subject == 'Reset hasła'
+    assert list(email.to) == [user.email]
 
 

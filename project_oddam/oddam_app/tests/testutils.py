@@ -62,7 +62,7 @@ def count_users():
 
 def create_superuser():
     username = "Superuser"
-    email = "superuser@fake.com"
+    email = "lukaskraj@gmail.com"
     password = "FakeFake69@"
     person = User.objects.create_superuser(username=username,
                                            email=email,
